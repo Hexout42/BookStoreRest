@@ -1,17 +1,16 @@
 package ru.lernup.bookstore.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.lernup.bookstore.dao.entity.Author;
 import ru.lernup.bookstore.dao.entity.Book;
 import ru.lernup.bookstore.dao.entity.Consumer;
 import ru.lernup.bookstore.dao.entity.Order;
 import ru.lernup.bookstore.dao.repository.*;
-import ru.lernup.bookstore.mapper.ConsumerMapper;
-import ru.lernup.bookstore.model.ConsumerDto;
-import ru.lernup.bookstore.view.ConsumerView;
+
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 public class DaoService {
@@ -21,14 +20,12 @@ public class DaoService {
     private final ConsumerRepository consumerRepository;
 
     private  final  OrderConsumerRepository orderConsumerRepository;
-    private final ConsumerMapper consumerMapper;
 
 
     public DaoService(AuthorRepository authorRepository,
                       BookRepository bookRepository,
                       ConsumerRepository consumerRepository,
-                      OrderConsumerRepository orderConsumerRepository,
-                      ConsumerMapper consumerMapper) {
+                      OrderConsumerRepository orderConsumerRepository) {
         this.authorRepository = authorRepository;
         this.bookRepository = bookRepository;
 
@@ -36,7 +33,7 @@ public class DaoService {
 
         this.orderConsumerRepository = orderConsumerRepository;
 
-        this.consumerMapper = consumerMapper;
+
     }
 
   public Order findOrderById(Long id){
@@ -56,6 +53,7 @@ public class DaoService {
   public List<Consumer> findAllConsumer(){
         return consumerRepository.findAll();
   }
+  @Transactional
   public Consumer saveUser(Consumer consumer){
         return consumerRepository.save(consumer);
   }
@@ -65,6 +63,7 @@ public class DaoService {
   public Order findOrderByConsumerIdAndId(Long id,Long consumerId){
         return orderConsumerRepository.getOrderByConsumer_IdAndId(consumerId,id);
   }
+  @Transactional
   public Order saveOrder(Order order){
         orderConsumerRepository.save(order);
         return order;
@@ -78,6 +77,7 @@ public class DaoService {
   public Author getAuthorById(Long id){
         return authorRepository.getReferenceById(id);
   }
+
 
 
 }

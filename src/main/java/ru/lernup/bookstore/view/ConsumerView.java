@@ -14,5 +14,12 @@ public class ConsumerView {
     private String birthDate;
     @JsonProperty(required = true)
     private String mail;
+    @JsonProperty(required = true)
+    private String login;
+    @JsonProperty(required = true)
+    private String pass;
+
+    @JsonProperty(defaultValue = "USER")
+    private List<String> role;
 
 }

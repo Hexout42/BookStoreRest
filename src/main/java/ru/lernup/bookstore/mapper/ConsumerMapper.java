@@ -3,6 +3,8 @@ package ru.lernup.bookstore.mapper;
 import org.springframework.stereotype.Component;
 import ru.lernup.bookstore.dao.entity.Consumer;
 import ru.lernup.bookstore.dao.entity.Order;
+import ru.lernup.bookstore.dao.entity.Role;
+import ru.lernup.bookstore.dao.entity.User;
 import ru.lernup.bookstore.dao.repository.OrderConsumerRepository;
 import ru.lernup.bookstore.model.ConsumerDto;
 import ru.lernup.bookstore.model.OrderDto;
@@ -22,6 +24,11 @@ public class ConsumerMapper {
                 .allNameConsumer(entity.getAllNameConsumer())
                 .birthDate(entity.getBirthDate())
                 .mail(entity.getMail())
+                .login(entity.getUser().getUserName())
+                .pass(entity.getUser().getPassword())
+                .role(entity.getUser().getRoles().stream().map(role -> {
+                        return role.getRole();
+                }).collect(Collectors.toList()))
                 .build();
     }
     public ConsumerView mapToView(ConsumerDto consumerDto){
@@ -30,6 +37,9 @@ public class ConsumerMapper {
         consumerView.setId(consumerDto.getId());
         consumerView.setMail(consumerDto.getMail());
         consumerView.setBirthDate(consumerDto.getBirthDate());
+        consumerView.setLogin(consumerDto.getLogin());
+        consumerView.setPass(consumerDto.getPass());
+        consumerView.setRole(consumerDto.getRole());
         return consumerView;
     }
     public ConsumerDto mapFromView(ConsumerView consumerView){
@@ -38,6 +48,9 @@ public class ConsumerMapper {
                 .id(consumerView.getId())
                 .mail(consumerView.getMail())
                 .birthDate(consumerView.getBirthDate())
+                .login(consumerView.getLogin())
+                .pass(consumerView.getPass())
+                .role(consumerView.getRole())
                 .build();
     }
     public Consumer mapFromDto(ConsumerDto consumerDto){
@@ -46,6 +59,16 @@ public class ConsumerMapper {
         consumer.setMail(consumerDto.getMail());
         consumer.setAllNameConsumer(consumerDto.getAllNameConsumer());
         consumer.setBirthDate(consumerDto.getBirthDate());
+        User user = new User();
+        user.setUserName(consumerDto.getLogin());
+        user.setPassword(consumerDto.getPass());
+        user.setRoles(consumerDto.getRole().stream().map(role->{
+            Role role1 = new Role();
+            role1.setRole(role);
+            role1.setUser(user);
+            return role1;
+        }).collect(Collectors.toList()));
+        consumer.setUser(user);
         return consumer;
     }
     }

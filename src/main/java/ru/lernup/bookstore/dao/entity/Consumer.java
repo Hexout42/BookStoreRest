@@ -12,10 +12,11 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
-@Table
+@Table(name = "consumer")
 
 
 public class Consumer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -30,11 +31,14 @@ public class Consumer {
     @OneToMany(mappedBy = "consumer", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Order> order;
+  @OneToOne(mappedBy = "consumerAuth", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
 
+    private User user;
     @Override
     public String toString() {
         return allNameConsumer + " " + birthDate ;
     }
+
 
 
 }

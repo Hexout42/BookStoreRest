@@ -14,6 +14,7 @@ import java.util.List;
 public class UserController {
    private final ControllerService controllerService;
    private boolean verification=false;
+   private String url;
 
 
     public UserController( ControllerService controllerService) {
@@ -30,15 +31,20 @@ public class UserController {
 
         return controllerService.getAllConsumer();
     }
+    @GetMapping("/register")
+    public String register(){
+        return "please register";
+    }
     @PostMapping("/verification")
     public Boolean verification(){
         verification =true;
         return true;
     }
-    @PostMapping
+    @PostMapping("/register")
     public ConsumerView createUser(
             @RequestBody ConsumerView consumer
     ){
+       System.out.println("Start register" + consumer.getAllNameConsumer());
         while (true) {
             if (verification) {
                 verification=false;

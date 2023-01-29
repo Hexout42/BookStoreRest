@@ -2,6 +2,7 @@ package ru.lernup.bookstore.model;
 
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,4 +15,10 @@ public class ConsumerDto {
     private final String birthDate;
     private final String mail;
 
+
+    private final String login;
+
+    private final String pass;
+
+    private final List<String> role;
 }
