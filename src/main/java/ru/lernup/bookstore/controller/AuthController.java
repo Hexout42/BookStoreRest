@@ -17,28 +17,28 @@ import java.io.IOException;
 
 
 
-@RestController
-@RequestMapping()
-public class AuthController {
-    private final JwtTokenProvider provider;
-
-
-    public AuthController(JwtTokenProvider provider) {
-        this.provider = provider;
-
-    }
-
-
-    @PostMapping("login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
-
-        return ResponseEntity.ok(provider.login(authRequest));
-    }
-    @PostMapping("/refreshAccessToken")
-    public ResponseEntity<RefreshAccessTokenResponse> refreshAccessToken(@RequestBody RefreshAccessTokenRequest request){
-        return ResponseEntity.ok(provider.refreshAccessToken(request));
-    }
-
-    }
+//@RestController
+//@RequestMapping()
+//public class AuthController {
+//    private final JwtTokenProvider provider;
+//
+//
+//    public AuthController(JwtTokenProvider provider) {
+//        this.provider = provider;
+//
+//    }
+//
+//
+//    @PostMapping("login")
+//    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
+//
+//        return ResponseEntity.ok(provider.login(authRequest));
+//    }
+//    @PostMapping("/refreshAccessToken")
+//    public ResponseEntity<RefreshAccessTokenResponse> refreshAccessToken(@RequestBody RefreshAccessTokenRequest request){
+//        return ResponseEntity.ok(provider.refreshAccessToken(request));
+//    }
+//
+//    }
 
 

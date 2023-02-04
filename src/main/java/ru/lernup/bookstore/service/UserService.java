@@ -8,12 +8,13 @@ import ru.lernup.bookstore.dao.repository.UserRepository;
 @Repository
 
 public class UserService {
-
+private final BCryptPasswordEncoder encoder;
 
     private final UserRepository userRepository;
 
     public UserService(
-                       UserRepository userRepository) {
+            BCryptPasswordEncoder encoder, UserRepository userRepository) {
+        this.encoder = encoder;
 
         this.userRepository = userRepository;
     }
@@ -21,7 +22,8 @@ public class UserService {
     public User getUserByLogin(String login){
         try {
             User user = userRepository.findUserByUserName(login);
-
+            String password = encoder.encode(user.getPassword());
+            user.setPassword(password);
             return user;
         }
         catch (NullPointerException e){

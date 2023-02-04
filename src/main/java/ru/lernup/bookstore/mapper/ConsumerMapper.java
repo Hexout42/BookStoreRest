@@ -2,20 +2,20 @@ package ru.lernup.bookstore.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.lernup.bookstore.dao.entity.Consumer;
-import ru.lernup.bookstore.dao.entity.Order;
-import ru.lernup.bookstore.dao.entity.Role;
 import ru.lernup.bookstore.dao.entity.User;
-import ru.lernup.bookstore.dao.repository.OrderConsumerRepository;
 import ru.lernup.bookstore.model.ConsumerDto;
-import ru.lernup.bookstore.model.OrderDto;
+import ru.lernup.bookstore.service.DaoService;
 import ru.lernup.bookstore.view.ConsumerView;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class ConsumerMapper {
+    private final DaoService daoService;
+
+    public ConsumerMapper(DaoService daoService) {
+        this.daoService = daoService;
+    }
 
 
     public ConsumerDto mapToDto(Consumer entity){
@@ -38,8 +38,7 @@ public class ConsumerMapper {
         consumerView.setMail(consumerDto.getMail());
         consumerView.setBirthDate(consumerDto.getBirthDate());
         consumerView.setLogin(consumerDto.getLogin());
-        consumerView.setPass(consumerDto.getPass());
-        consumerView.setRole(consumerDto.getRole());
+
         return consumerView;
     }
     public ConsumerDto mapFromView(ConsumerView consumerView){
@@ -49,8 +48,7 @@ public class ConsumerMapper {
                 .mail(consumerView.getMail())
                 .birthDate(consumerView.getBirthDate())
                 .login(consumerView.getLogin())
-                .pass(consumerView.getPass())
-                .role(consumerView.getRole())
+
                 .build();
     }
     public Consumer mapFromDto(ConsumerDto consumerDto){
@@ -59,15 +57,8 @@ public class ConsumerMapper {
         consumer.setMail(consumerDto.getMail());
         consumer.setAllNameConsumer(consumerDto.getAllNameConsumer());
         consumer.setBirthDate(consumerDto.getBirthDate());
-        User user = new User();
-        user.setUserName(consumerDto.getLogin());
-        user.setPassword(consumerDto.getPass());
-        user.setRoles(consumerDto.getRole().stream().map(role->{
-            Role role1 = new Role();
-            role1.setRole(role);
-            role1.setUser(user);
-            return role1;
-        }).collect(Collectors.toList()));
+       User user=daoService.getUserByName(consumerDto.getLogin());
+        user.setConsumerAuth(consumer);
         consumer.setUser(user);
         return consumer;
     }

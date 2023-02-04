@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
@@ -21,38 +22,28 @@ import ru.lernup.bookstore.security.filters.JwtTokenFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true)
 public class SecurityConfig  {
 
-    private final JwtTokenProvider provider;
-    private final AuthService authService;
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+            http.csrf().disable()
+                    .authorizeHttpRequests((authz) -> authz
+                            .requestMatchers("/user/**").hasRole("USER")
+                            .requestMatchers("/user/register").anonymous()
+                            .requestMatchers("/orders/**").hasRole("ADMIN")
+                            .requestMatchers("/book/**").permitAll()
+                            .requestMatchers("/author").authenticated()
+                            .anyRequest().authenticated())
+                    .formLogin();
 
 
-    public SecurityConfig(JwtTokenProvider provider, AuthService authService) {
 
-        this.provider = provider;
-        this.authService = authService;
-    }
+            return http.build();
 
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        JwtTokenFilter jwtTokenFilter = new JwtTokenFilter(provider);
-      return   http.httpBasic().disable()
-                        .csrf().disable()
-                        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                        .and()
-                .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/user/**").hasRole("USER")
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/refreshAccessToken").authenticated()
-                .requestMatchers("/orders/**").hasRole("ADMIN")
-                .requestMatchers("/book/**").permitAll()
-                .requestMatchers("/author").authenticated()
-                .anyRequest().authenticated()
-                        .and()
-                .addFilterAfter(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class))
-                .build();
-    }
+        }
 
 
 

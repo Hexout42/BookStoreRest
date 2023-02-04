@@ -1,9 +1,7 @@
 package ru.lernup.bookstore.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import ru.lernup.bookstore.service.ControllerService;
 import ru.lernup.bookstore.view.BookView;
 
@@ -11,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/book")
+@PreAuthorize("hasAnyRole(\"ROLE_USER\",\"ROLE_ADMIN\")")
 public class BookController {
     private  final ControllerService controllerService;
 
@@ -24,5 +23,15 @@ public class BookController {
     @GetMapping("/{id}")
     public  BookView getBookById(@PathVariable("id") Long id){
         return controllerService.getBookById(id);
+    }
+    @PreAuthorize("hasRole(\"ROLE_ADMIN\")")
+    @PostMapping
+    public BookView addBook(@RequestBody BookView bookView){
+        return controllerService.addBook(bookView);
+    }
+    @PreAuthorize("hasRole(\"ROLE_ADMIN\")")
+    @DeleteMapping("/{id}")
+    public void deleteBook(@PathVariable("id") Long id){
+        controllerService.deleteBook(id);
     }
 }

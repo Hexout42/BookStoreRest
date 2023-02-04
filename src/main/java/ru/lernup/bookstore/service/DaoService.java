@@ -2,10 +2,7 @@ package ru.lernup.bookstore.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.lernup.bookstore.dao.entity.Author;
-import ru.lernup.bookstore.dao.entity.Book;
-import ru.lernup.bookstore.dao.entity.Consumer;
-import ru.lernup.bookstore.dao.entity.Order;
+import ru.lernup.bookstore.dao.entity.*;
 import ru.lernup.bookstore.dao.repository.*;
 
 
@@ -20,12 +17,14 @@ public class DaoService {
     private final ConsumerRepository consumerRepository;
 
     private  final  OrderConsumerRepository orderConsumerRepository;
+    private final UserRepository userRepository;
 
 
     public DaoService(AuthorRepository authorRepository,
                       BookRepository bookRepository,
                       ConsumerRepository consumerRepository,
-                      OrderConsumerRepository orderConsumerRepository) {
+                      OrderConsumerRepository orderConsumerRepository,
+                      UserRepository userRepository) {
         this.authorRepository = authorRepository;
         this.bookRepository = bookRepository;
 
@@ -34,6 +33,7 @@ public class DaoService {
         this.orderConsumerRepository = orderConsumerRepository;
 
 
+        this.userRepository = userRepository;
     }
 
   public Order findOrderById(Long id){
@@ -46,6 +46,15 @@ public class DaoService {
   }
   public List<Book> findAllBook(){
         return bookRepository.findAll();
+  }
+  @Transactional
+  public Book addBook(Book book){
+        bookRepository.save(book);
+        return book;
+  }
+  @Transactional
+  public void deleteBook(Book book){
+        bookRepository.delete(book);
   }
   public Consumer findConsumerById(Long id){
         return consumerRepository.getReferenceById(id);
@@ -77,7 +86,20 @@ public class DaoService {
   public Author getAuthorById(Long id){
         return authorRepository.getReferenceById(id);
   }
+  public User getUserByName(String name){
+        return userRepository.findUserByUserName(name);
+  }
+@Transactional
+ public Author saveAuthor(Author author){
+        authorRepository.save(author);
+        return author;
+ }
+ @Transactional
+ public void deleteAuthor(Author author){
+        authorRepository.delete(author);
+ }
 
-
-
+ public Consumer getConsumerByLogin(String login){
+        return consumerRepository.findConsumerByUser(userRepository.findUserByUserName(login));
+ }
 }

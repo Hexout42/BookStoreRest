@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 @Data
 public class AuthorView {
-    @JsonProperty
+    @JsonProperty(required = false)
     private Long id;
     @JsonProperty
     private String allNameAuthor;

@@ -47,7 +47,7 @@ public class BookMapper {
         book.setNameBook(bookDto.getNameBook());
         book.setPriceBook(bookDto.getPriceBook());
         book.setId(book.getId());
-        book.getIdAuthor().setAllNameAuthor(bookDto.getIdAuthor());
+        book.getIdAuthor().setId(bookDto.getId());
         book.setNumberOfPages(bookDto.getNumberOfPages());
         return book;
     }
