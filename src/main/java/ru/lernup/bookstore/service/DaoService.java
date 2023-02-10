@@ -69,6 +69,9 @@ public class DaoService {
   public List<Order> findAllOrderByUser(Long id){
         return orderConsumerRepository.findAllByConsumer_Id(id);
   }
+  public List<Order> findAllOrderByUserName(String login){
+      return findAllOrderByUser(getConsumerByLogin(login).getId());
+  }
   public Order findOrderByConsumerIdAndId(Long id,Long consumerId){
         return orderConsumerRepository.getOrderByConsumer_IdAndId(consumerId,id);
   }

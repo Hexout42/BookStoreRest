@@ -1,27 +1,40 @@
 package ru.lernup.bookstore.controller;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import ru.lernup.bookstore.repository.ReportRepository;
 import ru.lernup.bookstore.service.ControllerService;
 
 import ru.lernup.bookstore.view.ConsumerView;
 import ru.lernup.bookstore.view.DetailsOrderView;
 import ru.lernup.bookstore.view.OrderView;
+import ru.lernup.bookstore.view.CreateReportView;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@EnableKafka
 public class UserController {
    private final ControllerService controllerService;
    private boolean verification=false;
+   private final ReportRepository repository;
+
+
+    @Autowired
+    private KafkaTemplate<String, CreateReportView> kafkaTemplate;
 
 
 
-    public UserController( ControllerService controllerService) {
+    public UserController(ControllerService controllerService,
+                          ReportRepository repository) {
         this.controllerService = controllerService;
 
+        this.repository = repository;
     }
     @GetMapping("{id}")
     public ConsumerView getUser(@PathVariable("id") Long id){
@@ -105,6 +118,20 @@ public class UserController {
                                  @RequestBody OrderView order){
         ConsumerView consumerView = controllerService.getConsumerByLogin(login);
         return controllerService.updateOrder(consumerView.getId(),order);
+    }
+    @PreAuthorize("#login==authentication.name")
+    @PostMapping("{id}/orders/generateReport")
+    public void generateReport(@PathVariable("id") String login,
+                                   @RequestBody CreateReportView createReportView){
+
+      kafkaTemplate.send("generateReport",login, createReportView);
+    }
+    @PreAuthorize("#login==authentication.name")
+    @GetMapping("{id}/orders/generateReport")
+    public CreateReportView getGenerateReport(@PathVariable("id") String login,
+                                              @RequestParam(name="month")Integer month,
+                                              @RequestParam(name="year") Integer year){
+      return   repository.getReport(login,month,year);
     }
 
 

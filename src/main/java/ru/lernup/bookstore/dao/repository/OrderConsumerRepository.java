@@ -11,4 +11,5 @@ public interface OrderConsumerRepository extends JpaRepository<Order, Long> {
    List<Order> findAllByConsumer_Id(Long id);
    Order getOrderByConsumer_IdAndId(Long idConsumer,Long id );
 
+
 }

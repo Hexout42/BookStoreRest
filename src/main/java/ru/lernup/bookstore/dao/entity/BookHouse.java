@@ -12,7 +12,7 @@ import lombok.Setter;
 public class BookHouse {
     @Id
     @OneToOne
-    @JoinColumn(name = "id_book")
+    @JoinColumn(name = "id_book",referencedColumnName = "id")
     private Book book;
 
 
